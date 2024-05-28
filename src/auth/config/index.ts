@@ -1,0 +1,1 @@
+export * from "./jwt-options-async-registor";
