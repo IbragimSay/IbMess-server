@@ -1,7 +1,8 @@
 import { PrismaService } from './../prisma/prisma.service';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { createUserDto } from './dto/create-user.dto';
 import { hashSync } from 'bcrypt';
+import { updataUserDto } from './dto';
 
 @Injectable()
 export class UserService {
@@ -29,6 +30,17 @@ export class UserService {
         })
     }
 
+    async getUserByMailOrId(idOrMail:string){
+        return await this.prismaService.user.findFirst({
+            where: {
+                OR: [
+                    {id: idOrMail},
+                    {mail: idOrMail}
+                ]
+            }
+        })
+    }
+
     async getUserByUserName(userName: string){
         return await this.prismaService.user.findFirst({
             where: {
@@ -37,13 +49,17 @@ export class UserService {
         })
     }
 
-    async findOne(idOrMail:string){
-        return await this.prismaService.user.findFirst({
+    async updata(id:string, dto:updataUserDto){
+        const _user = await this.getUserByMailOrId(id)
+        if(!_user){
+            throw new BadRequestException()
+        }
+        return await this.prismaService.user.update({
             where: {
-                OR: [
-                    {id: idOrMail},
-                    {mail: idOrMail}
-                ]
+                id
+            },
+            data: {
+                ...dto
             }
         })
     }

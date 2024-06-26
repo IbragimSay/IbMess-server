@@ -20,7 +20,7 @@ export class AuthService {
     ){}
 
     async signup(dto:signupDto){
-        const user = await this.userService.findOne(dto.mail)
+        const user = await this.userService.getUserByMailOrId(dto.mail)
         if(user){
             throw new BadRequestException()
         }
@@ -28,7 +28,7 @@ export class AuthService {
     }
 
     async login(dto:loginDto, agent:string){
-        const user:User = await this.userService.findOne(dto.mail)
+        const user:User = await this.userService.getUserByMailOrId(dto.mail)
         if(!user || !compareSync(dto.password, user.password)){
             throw new UnauthorizedException()
         }
