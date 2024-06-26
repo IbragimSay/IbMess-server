@@ -9,7 +9,7 @@ import { Token, User } from '@prisma/client';
 import { add } from 'date-fns';
 import { JwtPayload, Tokens } from './interface';
 import { Response } from 'express';
-import { loginDto, logupDto } from './dto';
+import { loginDto, signupDto } from './dto';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +19,7 @@ export class AuthService {
         private readonly jwtServic:JwtService
     ){}
 
-    async logup(dto:logupDto){
+    async signup(dto:signupDto){
         const user = await this.userService.findOne(dto.mail)
         if(user){
             throw new BadRequestException()

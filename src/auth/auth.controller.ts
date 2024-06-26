@@ -28,7 +28,7 @@ export class AuthController {
     @UseInterceptors(ClassSerializerInterceptor)
     @Post('signup')
     async logup(@Body() dto:signupDto){
-        const user =  await this.authService.logup(dto)
+        const user =  await this.authService.signup(dto)
         return new UserResponse(user)
     }
  

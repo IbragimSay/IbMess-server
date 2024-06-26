@@ -5,4 +5,6 @@ export class signupDto {
     mail: string
     @ApiProperty({default: "test"})
     password: string
+    firstName: string
+    lastName: string
 }

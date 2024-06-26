@@ -22,7 +22,9 @@ export class UserService {
             data: {
                 mail: dto.mail,
                 password: hashPassword,
-                userName
+                userName,
+                lastName: dto.lastName,
+                firstName: dto.firstName
             }
         })
     }

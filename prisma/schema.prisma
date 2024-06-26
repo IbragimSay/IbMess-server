@@ -14,11 +14,13 @@ datasource db {
 }
 
 model User {
-  id       String  @id @default(uuid())
-  mail     String
-  userName String
-  password String
-  tokens   Token[]
+  id        String  @id @default(uuid())
+  mail      String
+  lastName  String
+  firstName String
+  userName  String
+  password  String
+  tokens    Token[]
 }
 
 model Token {
