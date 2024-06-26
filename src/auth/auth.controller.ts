@@ -1,13 +1,14 @@
 import { AuthService } from './auth.service';
-import { BadRequestException, Body, ClassSerializerInterceptor, Controller, Get, HttpStatus, Post, Res, UnauthorizedException, UseInterceptors, UsePipes } from '@nestjs/common';
+import {Body, ClassSerializerInterceptor, Controller, Get, HttpStatus, Post, Res, UnauthorizedException, UseInterceptors } from '@nestjs/common';
 
 import { UserAgent } from 'common/common/decorators';
 import { Response } from 'express';
 import { Tokens } from './interface';
 import { Cookie } from 'common/common/decorators/cookies.decorator';
 import { loginDto, logupDto } from './dto';
-import { ApiBody, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserResponse } from 'src/user/response';
+
 
 const REFRESH_KEY = "refresh"
 
