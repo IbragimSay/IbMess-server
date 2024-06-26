@@ -22,12 +22,11 @@ async function bootstrap() {
       },
       "Authorization",
     )
-  
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/swagger', app, document);
   app.useGlobalPipes(new ValidationPipe())
-  await app.listen(3500);
+  await app.listen(5002);
   
 }
 bootstrap();
