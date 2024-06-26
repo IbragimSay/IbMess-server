@@ -13,6 +13,7 @@ export class UserResponse {
     mail: string
     @Exclude()
     password: string
+    userName: string
     constructor(user:User){
         Object.assign(this, user)
     }

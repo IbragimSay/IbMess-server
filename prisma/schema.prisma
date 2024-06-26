@@ -16,6 +16,7 @@ datasource db {
 model User {
   id       String  @id @default(uuid())
   mail     String
+  userName String
   password String
   tokens   Token[]
 }

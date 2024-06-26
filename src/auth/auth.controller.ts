@@ -5,7 +5,7 @@ import { UserAgent } from 'common/common/decorators';
 import { Response } from 'express';
 import { Tokens } from './interface';
 import { Cookie } from 'common/common/decorators/cookies.decorator';
-import { loginDto, logupDto } from './dto';
+import { loginDto, signupDto } from './dto';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserResponse } from 'src/user/response';
 
@@ -20,22 +20,20 @@ export class AuthController {
         private readonly authService:AuthService
     ){}
 
-    @ApiBody({type: logupDto})
     @ApiResponse({
         status: HttpStatus.OK,
         type: UserResponse
         
     })
     @UseInterceptors(ClassSerializerInterceptor)
-    @Post('logup')
-    async logup(@Body() dto:logupDto){
+    @Post('signup')
+    async logup(@Body() dto:signupDto){
         const user =  await this.authService.logup(dto)
         return new UserResponse(user)
     }
  
 
     @Post('login')
-    @ApiBody({type: loginDto})
     @ApiResponse({
         status: HttpStatus.OK,
         type: Tokens
