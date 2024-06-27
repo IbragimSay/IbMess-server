@@ -8,8 +8,7 @@ import * as redisStore from "cache-manager-redis-store"
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AppGateway } from './app/app.gateway';
-import { CacheModule } from '@nestjs/cache-manager';
-import { RedisClientOptions } from 'redis';
+import { CacheModule } from '@nestjs/cache-manager'
 
 
 @Module({
