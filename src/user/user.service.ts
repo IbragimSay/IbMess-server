@@ -41,6 +41,10 @@ export class UserService {
         })
     }
 
+    async getAll(){
+        return await this.prismaService.user.findMany()
+    }
+
     async getUserByUserName(userName: string){
         return await this.prismaService.user.findFirst({
             where: {
