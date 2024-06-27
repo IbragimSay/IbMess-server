@@ -14,13 +14,15 @@ datasource db {
 }
 
 model User {
-  id        String  @id @default(uuid())
-  mail      String
-  lastName  String
-  firstName String
-  userName  String
-  password  String
-  tokens    Token[]
+  id               String    @id @default(uuid())
+  mail             String
+  lastName         String
+  firstName        String
+  userName         String    @unique
+  password         String
+  tokens           Token[]
+  senderMessage    Message[] @relation("sender")
+  recipientMessage Message[] @relation("recipient")
 }
 
 model Token {
@@ -29,4 +31,19 @@ model Token {
   User      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String?
   userAgent String
+}
+
+model Message {
+  id          Int      @id @unique @default(autoincrement())
+  content     String
+  type        ChatType
+  recipientId String
+  senderName  String
+  sender      User?    @relation(fields: [senderName], references: [userName], name: "sender")
+  recipilent  User?    @relation(fields: [recipientId], references: [userName], name: "recipient")
+}
+
+enum ChatType {
+  Image
+  Text
 }
