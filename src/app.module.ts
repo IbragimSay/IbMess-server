@@ -9,6 +9,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AppGateway } from './app/app.gateway';
 import { CacheModule } from '@nestjs/cache-manager'
+import { MessageModule } from './message/message.module';
 
 
 @Module({
@@ -19,7 +20,7 @@ import { CacheModule } from '@nestjs/cache-manager'
     store: redisStore,
     host: "localhost",
     port: "6379"
-  })],
+  }), MessageModule],
   providers: [AppGateway]
 })
 export class AppModule {}

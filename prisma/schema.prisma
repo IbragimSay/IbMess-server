@@ -34,16 +34,10 @@ model Token {
 }
 
 model Message {
-  id          Int      @id @unique @default(autoincrement())
-  content     String
-  type        ChatType
-  recipientId String
-  senderName  String
-  sender      User?    @relation(fields: [senderName], references: [userName], name: "sender")
-  recipilent  User?    @relation(fields: [recipientId], references: [userName], name: "recipient")
-}
-
-enum ChatType {
-  Image
-  Text
+  id            Int    @id @unique @default(autoincrement())
+  content       String
+  recipientName String
+  senderName    String
+  sender        User?  @relation(fields: [senderName], references: [userName], name: "sender")
+  recipilent    User?  @relation(fields: [recipientName], references: [userName], name: "recipient")
 }

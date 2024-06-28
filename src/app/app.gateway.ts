@@ -27,13 +27,13 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
   @WebSocketServer() server:Server
   @SubscribeMessage('message')
   handleMessage(client: any, data: {name:string, token: string}): string {
-
     return 'Hello world!';
   }
 
-  async handleConnection(client: Socket, data: {token: string}) {
-    const token = data.token.split(" ")[1]
-    const payload:JwtPayload = jwt.verify(token, this.configService.get("JWT_SECRET")) as JwtPayload
+
+  @SubscribeMessage("login")
+  async handleLogin(client: Socket, data: {token: string}) {
+    const payload:JwtPayload = this.getPayload(data.token)
     const user:User = await this.prismaService.user.findFirst({
       where: {
         id: payload.id,
@@ -44,7 +44,17 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
     console.log(client.id)
   }
 
-  handleDisconnect(client: any) {
-    console.log(client)
+  handleConnection(client: Socket, ...args: any[]) {
+    console.log("connect===ok" + client.id)
+  }
+
+  handleDisconnect(client: Socket) {
+    console.log(client.id)
+  }
+
+  private getPayload(token:string){
+    const _token = token.split(" ")[1]
+    const payload:JwtPayload = jwt.verify(_token, this.configService.get("JWT_SECRET")) as JwtPayload
+    return payload
   }
 }
