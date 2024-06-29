@@ -63,6 +63,17 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
     console.log(client.id)
   }
 
+  @SubscribeMessage("deleteMessage")
+  async handleDeleteMessage(client:Socket, data: {token: string, recipientName:string, messageId:number}){
+    const payload:JwtPayload = this.getPayload(data.token)
+    const user:User = await this.userService.getUserByMailOrId(payload.id)
+    const toUserSocketId:string = await this.redis.get(data.recipientName)
+    if(!toUserSocketId){
+      await this.messageService.delete(user, data.messageId)
+    }
+    const message = await this.messageService.delete(user, data.messageId)
+    this.server.to(toUserSocketId).emit("removeMess", message)
+  }
 
   private getPayload(token:string){
     const _token = token.split(" ")[1]
