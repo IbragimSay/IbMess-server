@@ -1,3 +1,5 @@
+import { UserService } from 'src/user/user.service';
+import { MessageService } from './../message/message.service';
 import { JwtPayload } from './../auth/interface';
 import { Inject } from '@nestjs/common';
 import { PrismaService } from './../prisma/prisma.service';
@@ -21,25 +23,29 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
   constructor(
     private readonly prismaService:PrismaService,
     private readonly configService:ConfigService,
+    private readonly messageService:MessageService,
+    private readonly userService:UserService,
     @Inject(CACHE_MANAGER) private redis: Cache
   ){}
 
-  @WebSocketServer() server:Server
-  @SubscribeMessage('message')
-  handleMessage(client: any, data: {name:string, token: string}): string {
-    return 'Hello world!';
-  }
 
+  @SubscribeMessage("sendMessage")
+  async hendleSendMessage(client: Socket, data: {recipientName: string, token: string, content:string}){
+    const payload:JwtPayload = this.getPayload(data.token)
+    const user:User = await this.userService.getUserByMailOrId(payload.id)
+    this.messageService.save(data.content, user.userName, data.recipientName)
+
+  }
 
   @SubscribeMessage("login")
   async handleLogin(client: Socket, data: {token: string}) {
     const payload:JwtPayload = this.getPayload(data.token)
-    const user:User = await this.prismaService.user.findFirst({
-      where: {
-        id: payload.id,
-        mail: payload.mail
-      }
-    }) 
+    const user:User = await this.userService.getUserByMailOrId(payload.id)
+    const userClientId = await this.redis.get(user.userName)
+    if(!userClientId){
+      await this.redis.set(user.userName, client.id)
+    }
+    await this.redis.del(user.userName)
     await this.redis.set(user.userName, client.id)
     console.log(client.id)
   }
