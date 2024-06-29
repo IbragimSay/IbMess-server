@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 import { PrismaService } from './../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 
@@ -14,6 +15,15 @@ export class MessageService {
                     {recipientName: myUserName, senderName: notMyUserName},
                     {recipientName: notMyUserName, senderName: myUserName}
                 ]
+            }
+        })
+    }
+
+    async delete(user:User, id:number){
+        return await this.prismaService.message.delete({
+            where: {
+                id,
+                senderName: user.userName
             }
         })
     }
