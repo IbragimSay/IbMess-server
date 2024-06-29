@@ -28,13 +28,14 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
     @Inject(CACHE_MANAGER) private redis: Cache
   ){}
 
+  @WebSocketServer() server:Server
 
   @SubscribeMessage("sendMessage")
   async hendleSendMessage(client: Socket, data: {recipientName: string, token: string, content:string}){
     const payload:JwtPayload = this.getPayload(data.token)
     const user:User = await this.userService.getUserByMailOrId(payload.id)
-    this.messageService.save(data.content, user.userName, data.recipientName)
-
+    const message = await this.messageService.save(data.content, user.userName, data.recipientName)
+    this.server.to(client.id).emit('getMess', message)
   }
 
   @SubscribeMessage("login")
@@ -49,6 +50,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
     await this.redis.set(user.userName, client.id)
     console.log(client.id)
   }
+
 
   handleConnection(client: Socket, ...args: any[]) {
     console.log("connect===ok" + client.id)
