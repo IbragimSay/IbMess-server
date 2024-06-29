@@ -34,8 +34,12 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
   async hendleSendMessage(client: Socket, data: {recipientName: string, token: string, content:string}){
     const payload:JwtPayload = this.getPayload(data.token)
     const user:User = await this.userService.getUserByMailOrId(payload.id)
+    const toUserSocketId:string = await this.redis.get(data.recipientName)
+    if(!toUserSocketId){
+      await this.messageService.save(data.content, user.userName, data.recipientName)
+    }
     const message = await this.messageService.save(data.content, user.userName, data.recipientName)
-    this.server.to(client.id).emit('getMess', message)
+    this.server.to(toUserSocketId).emit('getMess', message)
   }
 
   @SubscribeMessage("login")
@@ -51,7 +55,6 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
     console.log(client.id)
   }
 
-
   handleConnection(client: Socket, ...args: any[]) {
     console.log("connect===ok" + client.id)
   }
@@ -59,6 +62,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
   handleDisconnect(client: Socket) {
     console.log(client.id)
   }
+
 
   private getPayload(token:string){
     const _token = token.split(" ")[1]
