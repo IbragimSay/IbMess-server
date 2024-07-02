@@ -41,6 +41,36 @@ export class UserService {
         })
     }
 
+    async getAllUserMessage(userName:string){
+        try{
+            return await this.prismaService.user.findMany({
+                where: {
+                    OR: [
+                        {
+                            senderMessage:{
+                                some: {
+                                    recipientName: userName
+                                }
+                            }
+                        },
+                        {
+                            recipientMessage:{
+                                some: {
+                                    senderName: userName
+                                }
+                            }
+                        }
+                    ],
+                    NOT: {
+                        userName
+                    }
+                }
+            })
+        }catch(e){
+            console.log(e)
+        }
+    }
+
     async getAll(){
         return await this.prismaService.user.findMany()
     }

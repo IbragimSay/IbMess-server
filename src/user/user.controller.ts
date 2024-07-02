@@ -1,8 +1,10 @@
 import { UserService } from 'src/user/user.service';
-import { BadRequestException, Body, ClassSerializerInterceptor, Controller, Get, Param, Patch, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, ClassSerializerInterceptor, Controller, Get, Param, Patch, Req, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserResponse } from './response';
 import { updataUserDto } from './dto';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { Request } from 'express';
+import { JwtPayload } from 'src/auth/interface';
 
 @Controller('user')
 export class UserController {
@@ -23,6 +25,14 @@ export class UserController {
     @Get("")
     async getAll(){
         return this.userService.getAll()
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("mess/message")
+    async getAllUserMessage(@Req() req:Request){
+        const payload:JwtPayload = req.user as JwtPayload
+        const user = await this.userService.getUserByMailOrId(payload.id)
+        return await this.userService.getAllUserMessage(user.userName)
     }
 
     @Patch(":id")
