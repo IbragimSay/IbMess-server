@@ -22,17 +22,12 @@ export class UserController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @UseInterceptors(ClassSerializerInterceptor)
     @Get("")
-    async getAll(){
-        return this.userService.getAll()
-    }
-
-    @UseGuards(JwtAuthGuard)
-    @Get("mess/message")
-    async getAllUserMessage(@Req() req:Request){
-        const payload:JwtPayload = req.user as JwtPayload
-        const user = await this.userService.getUserByMailOrId(payload.id)
-        return await this.userService.getAllUserMessage(user.userName)
+    async getUserByToken(@Req() req:Request){
+            const payload = req.user as JwtPayload
+            const user = await this.userService.getUserByMailOrId(payload.mail)
+            return new UserResponse(user)
     }
 
     @Patch(":id")
