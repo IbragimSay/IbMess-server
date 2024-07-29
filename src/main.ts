@@ -9,7 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api')
   app.use(CookieParser())
-  
+  app.enableCors()
   const config = new DocumentBuilder()
     .setTitle('Nest blog API')
     .setDescription('The blog api info')
